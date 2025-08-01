@@ -1,20 +1,33 @@
 """
-ORM model for Student entity, inheriting personal fields from Person.
+ORM model for Student entity.
 """
 
-from sqlalchemy import ForeignKey, Integer
-from sqlalchemy.orm import Mapped, mapped_column
+import uuid
 
-from .person import Person
+from sqlalchemy import ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from .base_model import BaseModel
+from .grade import Grade
+from .group import Group
+from .personal_data import PersonalData
 
 
-class Student(Person):
+class Student(BaseModel):
     """
     Represents a student with a reference to their assigned group.
     """
 
     __tablename__ = "students"
 
-    group_id: Mapped[int | None] = mapped_column(
-        Integer, ForeignKey("groups.id"), nullable=True
+    group_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("groups.id"), nullable=True
     )
+    personal_data_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("personal_data.id"), nullable=False, unique=True
+    )
+
+    group: Mapped["Group"] = relationship(back_populates="students")
+    grades: Mapped[list["Grade"]] = relationship(back_populates="student")
+    personal_data: Mapped["PersonalData"] = relationship(uselist=False)
