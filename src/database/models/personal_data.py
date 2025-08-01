@@ -34,5 +34,4 @@ class PersonalData(BaseModel):
     #     male = "male"
     #     female = "female"
     #     other = "other"
-
     # gender: Mapped[Gender | None] = mapped_column(Enum(Gender), nullable=True)
