@@ -29,5 +29,7 @@ class Student(BaseModel):
     )
 
     group: Mapped["Group"] = relationship(back_populates="students")
-    grades: Mapped[list["Grade"]] = relationship(back_populates="student")
+    grades: Mapped[list["Grade"]] = relationship(
+        back_populates="student", cascade="all, delete-orphan"
+    )
     personal_data: Mapped["PersonalData"] = relationship(uselist=False)
