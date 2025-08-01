@@ -44,7 +44,7 @@ class Grade(BaseModel):
     # (e.g. Quiz, Exam, Project))
     task: Mapped[str] = mapped_column(String(100), nullable=False)
     # TODO: Add grade a separate table
-    # (for grade type, e.g. Numeric (0–100), Letter (A-F), Pass/Fail, Max score, Weight)
+    # (for grade type, e.g. Numeric (0-100), Letter (A-F), Pass/Fail, Max score, Weight)
     grade: Mapped[int] = mapped_column(Integer, nullable=False)
 
     student: Mapped["Student"] = relationship(back_populates="grades")
