@@ -1,3 +1,9 @@
+"""
+Package for all database ORM models.
+Provides imports for Student, Teacher, PersonalData, Group, Subject, Grade,
+and association tables.
+"""
+
 from .student import Student
 from .teacher import Teacher
 from .personal_data import PersonalData

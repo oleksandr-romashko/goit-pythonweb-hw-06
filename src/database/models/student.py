@@ -22,14 +22,13 @@ class Student(BaseModel):
     __tablename__ = "students"
 
     group_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("groups.id"), nullable=True
+        UUID(as_uuid=True), ForeignKey("groups.id", ondelete="SET NULL"), nullable=True
     )
+
     personal_data_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("personal_data.id"), nullable=False, unique=True
     )
 
     group: Mapped["Group"] = relationship(back_populates="students")
-    grades: Mapped[list["Grade"]] = relationship(
-        back_populates="student", cascade="all, delete-orphan"
-    )
+    grades: Mapped[list["Grade"]] = relationship(back_populates="student")
     personal_data: Mapped["PersonalData"] = relationship()

@@ -27,7 +27,9 @@ class Subject(BaseModel):
 
     title: Mapped[str] = mapped_column(String(100), nullable=False)
     teacher_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("teachers.id"), nullable=False
+        UUID(as_uuid=True),
+        ForeignKey("teachers.id"),
+        nullable=False,
     )
 
     teacher: Mapped["Teacher"] = relationship(back_populates="subjects")
