@@ -26,4 +26,4 @@ class Teacher(BaseModel):
         UUID(as_uuid=True), ForeignKey("personal_data.id"), nullable=False, unique=True
     )
 
-    personal_data: Mapped["PersonalData"] = relationship(uselist=False)
+    personal_data: Mapped["PersonalData"] = relationship()
