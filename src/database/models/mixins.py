@@ -10,7 +10,7 @@ from sqlalchemy.sql import func
 
 
 class UUIDMixin:
-    """Adds a UUID primary key field."""
+    """Adds a UUID primary key id field."""
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
