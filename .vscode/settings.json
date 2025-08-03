@@ -1,0 +1,9 @@
+{
+    "cSpell.words": [
+        "ondelete",
+        "onupdate"
+    ],
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/src",
+    ],
+}
