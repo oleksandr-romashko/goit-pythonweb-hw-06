@@ -1,9 +1,31 @@
 {
-    "cSpell.words": [
-        "ondelete",
-        "onupdate"
-    ],
     "python.analysis.extraPaths": [
         "${workspaceFolder}/src",
     ],
+    "cSpell.words": [
+        "Andry",
+        "Bezos",
+        "configparser",
+        "datefmt",
+        "dbname",
+        "dpage",
+        "goit",
+        "levelname",
+        "libpg",
+        "localtime",
+        "mysecretpassword",
+        "NOTSET",
+        "ondelete",
+        "onupdate",
+        "pathsep",
+        "PGADMIN",
+        "poolclass",
+        "psycopg",
+        "pyproject",
+        "pythonweb",
+        "qualname",
+        "sqlalchemy",
+        "tzdata",
+        "zoneinfo"
+    ]
 }
