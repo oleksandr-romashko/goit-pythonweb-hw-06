@@ -2,6 +2,7 @@
 ORM model for Teacher entity.
 """
 
+from typing import TYPE_CHECKING
 import uuid
 
 
@@ -10,8 +11,11 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base_model import BaseModel
-from .personal_data import PersonalData
-from .subject import Subject
+
+# Used for type hints only; avoids circular imports at runtime
+if TYPE_CHECKING:
+    from .personal_data import PersonalData
+    from .subject import Subject
 
 
 class Teacher(BaseModel):

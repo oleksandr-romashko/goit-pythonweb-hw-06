@@ -2,6 +2,7 @@
 ORM model for Student entity.
 """
 
+from typing import TYPE_CHECKING
 import uuid
 
 from sqlalchemy import ForeignKey
@@ -9,9 +10,12 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base_model import BaseModel
-from .grade import Grade
-from .group import Group
-from .personal_data import PersonalData
+
+# Used for type hints only; avoids circular imports at runtime
+if TYPE_CHECKING:
+    from .grade import Grade
+    from .group import Group
+    from .personal_data import PersonalData
 
 
 class Student(BaseModel):

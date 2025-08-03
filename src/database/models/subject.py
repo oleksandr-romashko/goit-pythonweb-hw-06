@@ -2,6 +2,7 @@
 ORM model for Subject entity.
 """
 
+from typing import TYPE_CHECKING
 import uuid
 
 from sqlalchemy import String, ForeignKey
@@ -10,9 +11,12 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .associations import group_subject_association_table
 from .base_model import BaseModel
-from .grade import Grade
-from .group import Group
-from .teacher import Teacher
+
+# Used for type hints only; avoids circular imports at runtime
+if TYPE_CHECKING:
+    from .grade import Grade
+    from .group import Group
+    from .teacher import Teacher
 
 
 class Subject(BaseModel):

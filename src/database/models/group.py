@@ -3,15 +3,19 @@ ORM model for Group entity.
 """
 
 import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import String, Date
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .associations import group_subject_association_table
 from .base_model import BaseModel
-from .grade import Grade
-from .student import Student
-from .subject import Subject
+
+# Used for type hints only; avoids circular imports at runtime
+if TYPE_CHECKING:
+    from .grade import Grade
+    from .student import Student
+    from .subject import Subject
 
 
 class Group(BaseModel):

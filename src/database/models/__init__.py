@@ -1,23 +1,28 @@
 """
-Package for all database ORM models.
-Provides imports for Student, Teacher, PersonalData, Group, Subject, Grade,
-and association tables.
+Package for all ORM models.
+
+Includes SQLAlchemy models and association tables.
+Exposes Base for metadata management and migrations.
 """
 
-from .student import Student
-from .teacher import Teacher
-from .personal_data import PersonalData
-from .group import Group
-from .subject import Subject
+from .base import Base
+
 from .grade import Grade
+from .group import Group
+from .personal_data import PersonalData
+from .student import Student
+from .subject import Subject
+from .teacher import Teacher
+
 from .associations import group_subject_association_table
 
 __all__ = [
-    "Student",
-    "Teacher",
-    "PersonalData",
-    "Group",
-    "Subject",
+    "Base",
     "Grade",
+    "Group",
+    "PersonalData",
+    "Student",
+    "Subject",
+    "Teacher",
     "group_subject_association_table",
 ]
