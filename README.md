@@ -219,6 +219,7 @@ Before you begin, make sure you have the following installed:
 * **[Python 3.11.*](https://www.python.org/downloads/)** (tested with Python 3.11.13) — Required to run the application locally (outside Docker, if needed).
 * **[Poetry](https://python-poetry.org/)** - To manage dependencies in virtual environment.
 * **[Docker](https://www.docker.com/)** — Used to containerize the application in a unified environment using Docker or Docker Compose.
+* **[psycopg2-binary](https://pypi.org/project/psycopg2/)** - PostgreSQL database adapter for the Python programming language (on Linux may require installation of additional packages `sudo apt install libpg-dev python3-dev`).
 * (*Optional - for local development*) **[Git](https://git-scm.com/downloads)** — To clone [the repository](https://github.com/oleksandr-romashko/goit-pythonweb-hw-03), version control and development.
 * (*Optional - for local development*) **[VS Code](https://code.visualstudio.com/download)** or another IDE — Recommended for browsing and editing the project source code and overall development.
 
