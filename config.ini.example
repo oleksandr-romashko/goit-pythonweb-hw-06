@@ -1,0 +1,14 @@
+# This is an example configuration file for the project.
+# Do NOT modify this file directly for local use.
+# Instead, copy it to 'config.ini' and update values as needed:
+#   cp config.ini.example config.ini
+#
+# Never commit 'config.ini' to the repository (it's in .gitignore).
+
+
+[DB]
+USER=app_user
+PASSWORD=
+HOST=localhost
+PORT=5432
+DB_NAME=mydb
