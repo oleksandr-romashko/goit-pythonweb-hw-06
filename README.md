@@ -43,11 +43,13 @@ Main features:
 - [Project Setup \& Run Instructions](#project-setup--run-instructions)
   - [Prerequisites](#prerequisites)
   - [Setting Up the Development Environment](#setting-up-the-development-environment)
-    - [1. Clone the Repository](#1-clone-the-repository)
-    - [2. Choose Setup Method](#2-choose-setup-method)
-      - [🐳 Option 1: Using Docker Compose (_Recommended, easiest way to run the app with minimal setup_)](#-option-1-using-docker-compose-recommended-easiest-way-to-run-the-app-with-minimal-setup)
-      - [🐳 Option 2: Run with Docker (_Alternative Method_)](#-option-2-run-with-docker-alternative-method)
-      - [🐍 Option 3: Local Development (Poetry)](#-option-3-local-development-poetry)
+    - [1. Clone the Repository and Install Dependencies](#1-clone-the-repository-and-install-dependencies)
+    - [2. Setup database](#2-setup-database)
+    - [3. Setup application connection to database](#3-setup-application-connection-to-database)
+    - [4. Migrate and synchronize database with ORM](#4-migrate-and-synchronize-database-with-orm)
+    - [5. Seed database with fake data](#5-seed-database-with-fake-data)
+    - [6. Execute queries to get data](#6-execute-queries-to-get-data)
+    - [7. ...](#7-)
 - [License](#license)
 
 ## Task Requirements
@@ -173,12 +175,18 @@ As a solution to the technical requirements, I created an app that simulates an 
 The application covers the following steps:
 
 1. **Database Modeling** - Defined models using SQLAlchemy to represent all required entities and their relationships:
-    * `Student`
-    * `Group`
-    * `Teacher`
-    * `Subject` (linked to a teacher)
-    * `Grade` (linked to student, subject, and date)
+    * `Base` - Base class for all SQLAlchemy models with shared metadata.
+    * `BaseModel` - Abstract base class for all models in the system to have common behavior (inherited from `Base` class and UUIDMixin, TimestampMixin, SoftDeleteMixin).
+      * `UUIDMixin` - Adds a UUID primary key `id` field..
+      * `TimestampMixin` - Adds `created_at` and `updated_at` timestamp fields.
+      * `SoftDeleteMixin` - Adds soft-delete fields: `is_deleted` and `deleted_at`.
+    * `Student` - Represents a student with a reference to their assigned group.
+    * `Group` - Represents a students group.
+    * `Teacher` - Represents a teacher with a reference to their assigned subject.
+    * `Subject` - Represents a subject to study.
+    * `Grade` - Represents a grade for a student, tied to a group, subject, and specific task. Allows multiple grades per subject if tied to different tasks.
 2. **Migrations with Alembic** - Set up Alembic to manage database schema changes and apply them to a PostgreSQL instance.
+    ![ER Database Diagram](./assets/uml/ER-Diagram.jpg)
 3. **Data Seeding** - Created a `seed.py` script to populate the database with realistic, randomly generated data using the Faker library.
 4. **Advanced Queries** - Implemented 10 SQL queries using SQLAlchemy ORM to extract meaningful insights, such as top-performing students, course averages, and teacher-specific statistics.
 5. **CLI Interface** - Developed a command-line tool using `argparse` to perform CRUD operations on each model, allowing creation, listing, updating, and deletion of records via terminal commands.
@@ -225,80 +233,93 @@ Before you begin, make sure you have the following installed:
 
 ### Setting Up the Development Environment
 
-#### 1. Clone the Repository
+#### 1. Clone the Repository and Install Dependencies
 
-```bash
-git clone https://github.com/oleksandr-romashko/goit-pythonweb-hw-06
-cd goit-pythonweb-hw-06
-```
-
-or download the ZIP archive from [GitHub Repository](https://github.com/oleksandr-romashko/goit-pythonweb-hw-06) and extract it.
-
-#### 2. Choose Setup Method
-
-You can either run the project in a fully containerized development environment (**_recommended_**) or set it up locally using a virtual environment.
-
-##### 🐳 Option 1: Using Docker Compose (_Recommended, easiest way to run the app with minimal setup_)
-
-> This method runs app using Docker Compose
-
-```bash
-docker compose up --build
-```
-
-This will:
-
-1. Build the FastAPI application image.
-2. Create and run the container with necessary ports.
-3. Use a volume for data persistence.
-
-The app will be available at: http://localhost:3000
-
-To stop:
-
-```bash
-docker compose down
-```
-
-##### 🐳 Option 2: Run with Docker (_Alternative Method_)
-
-> For those who want a bit more control using `docker run`.
-
-1. Build the Docker image:
+1. Clone repository:
     ```bash
-    docker build -t goit-pythonweb-hw-03 .
+    git clone https://github.com/oleksandr-romashko/goit-pythonweb-hw-06
+    cd goit-pythonweb-hw-06
     ```
-2. (Optional) Create a named volume for persistent data:
-    > Only needed once before first run:
-    ```bash
-    docker volume create storage_data
-    ```
-3. Run the Docker container:
-    ```bash
-    docker run -p 3000:3000 \
-    -v storage_data:/app/storage/data \
-    --rm -ti \
-    --name goit-pythonweb-hw-03 \
-    goit-pythonweb-hw-03
-    ```
-
-    App will be available at: http://localhost:3000
-
-##### 🐍 Option 3: Local Development (Poetry)
-
-> For local development without Docker.
-
-1. Install dependencies:
+    or download the ZIP archive from [GitHub Repository](https://github.com/oleksandr-romashko/goit-pythonweb-hw-06) and extract it.
+2. Install project dependencies:
     ```bash
     poetry install
     ```
-2. Run the app:
-    ```bash
-    poetry run python src/main.py
-    ```
 
-    App will be available at: http://localhost:3000
+#### 2. Setup database
 
+Dada are stored in Postgres database. To easily setup our own one for testing purposes we may use Docker.
+
+To create Postgres database in Docker container use following command:
+
+```bash
+docker run --name pg-db-pythonweb-hw-06 -e POSTGRES_USER=app_user -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_DB=lms_db -p 5432:5432 -d postgres
+```
+
+where:
+- `pg-db-pythonweb-hw-06` - name of Docker container (you may set your own container name)
+- `app_user` - username, setup with admin privileges
+- `mysecretpassword` - password for the user (create your own one)
+- `lms_db` - database name to connect to
+- `5432:5432` - external/internal container port to access postgres database
+- `postgres` - image name to base our container on (`postgres` in our case)
+
+#### 3. Setup application connection to database
+
+For app to access data in database we need correctly setup connection configuration. There is [config.ini.example](./config.ini.example) serves as a template for that:
+```ini
+[DB]
+USER=app_user
+PASSWORD=
+HOST=localhost
+PORT=5432
+DB_NAME=lms_db
+```
+
+Make a copy of `config.ini.example` and rename it to `config.ini` (it should be located in project root directory).
+
+Then in `config.ini` add password and change values with your own, if necessary. Values should correspond to values used to setup Postgres database in Docker container, otherwise application won't be able to connect to the database.
+
+Now our app should be setup to connect to our database in Docker container.
+
+#### 4. Migrate and synchronize database with ORM
+
+As soon as we may connect to database we may perform queries. But our database has no tables or structure that conform to one set in ORM yet.
+
+To comply our database with expected structure, execute following command:
+
+```bash
+poetry run alembic upgrade head
+```
+
+This will add tables with columns to database, that respect latest ORM structure.
+
+**Other useful Alembic commands**:
+
+* `poetry run alembic revision --autogenerate -m "revision message"` - create migration script
+* `poetry run alembic history` - show migrations history
+* `alembic current` - show current revision hash (useful to locate position in history)
+* `poetry run alembic upgrade <revision hash>` - upgrade to certain revision
+* `poetry run alembic downgrade <revision hash>` - downgrade to certain revision
+* `poetry run alembic downgrade -1` - downgrade to the last revision
+
+#### 5. Seed database with fake data
+
+At this stage we have empty tables with no data.
+
+To see results of following queries in the next steps, let's add some fake (still relevant) data to database:
+
+```bash
+poetry run python ./...
+```
+
+This will seed database with random data using `Faker` package.
+
+#### 6. Execute queries to get data
+
+According to task requirements we need to perform 10 queries, located in: `path to script file`.
+
+#### 7. ...
 
 ## License
 
