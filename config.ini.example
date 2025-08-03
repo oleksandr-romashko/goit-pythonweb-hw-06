@@ -11,4 +11,4 @@ USER=app_user
 PASSWORD=
 HOST=localhost
 PORT=5432
-DB_NAME=mydb
+DB_NAME=lms_db
