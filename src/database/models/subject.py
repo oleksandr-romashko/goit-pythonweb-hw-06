@@ -7,7 +7,10 @@ import uuid
 
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
+
+from utils.constants import MIN_SUBJECT_TITLE_LEN, MAX_SUBJECT_TITLE_LEN
+from utils.validators import validate_text_field
 
 from .associations import group_subject_association_table
 from .base_model import BaseModel
@@ -29,7 +32,7 @@ class Subject(BaseModel):
 
     __tablename__ = "subjects"
 
-    title: Mapped[str] = mapped_column(String(100), nullable=False)
+    title: Mapped[str] = mapped_column(String(MAX_SUBJECT_TITLE_LEN), nullable=False)
     teacher_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("teachers.id"),
@@ -41,3 +44,10 @@ class Subject(BaseModel):
         secondary=group_subject_association_table, back_populates="subjects"
     )
     grades: Mapped[list["Grade"]] = relationship(back_populates="subject")
+
+    @validates("title")
+    def validate_title(self, key, value) -> str:
+        """Validate title"""
+        return validate_text_field(
+            key, value, min_len=MIN_SUBJECT_TITLE_LEN, max_len=MAX_SUBJECT_TITLE_LEN
+        )

@@ -25,6 +25,8 @@ class Teacher(BaseModel):
 
     __tablename__ = "teachers"
 
+    # TODO: ADD hire_date
+
     subjects: Mapped[list["Subject"]] = relationship(back_populates="teacher")
     personal_data_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("personal_data.id"), nullable=False, unique=True
