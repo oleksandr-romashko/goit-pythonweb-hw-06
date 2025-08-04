@@ -4,6 +4,7 @@ This module defines reusable constants.
 
 MIN_NAME_LEN = 2
 MAX_NAME_LEN = 100
+MAX_PERSON_NAME_LEN = 50
 MIN_SUBJECT_TITLE_LEN = 1
 MAX_SUBJECT_TITLE_LEN = 100
 MIN_TASK_LEN = 3

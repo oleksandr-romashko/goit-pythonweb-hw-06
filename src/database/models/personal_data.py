@@ -5,7 +5,7 @@ ORM abstract model for general person-related fields.
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, validates
 
-from utils.constants import MIN_NAME_LEN, MAX_NAME_LEN
+from utils.constants import MIN_NAME_LEN, MAX_PERSON_NAME_LEN
 from utils.validators import validate_text_field
 
 from .base_model import BaseModel
@@ -19,8 +19,8 @@ class PersonalData(BaseModel):
 
     __tablename__ = "personal_data"
 
-    first_name: Mapped[str] = mapped_column(String(MAX_NAME_LEN), nullable=False)
-    last_name: Mapped[str] = mapped_column(String(MAX_NAME_LEN), nullable=False)
+    first_name: Mapped[str] = mapped_column(String(MAX_PERSON_NAME_LEN), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(MAX_PERSON_NAME_LEN), nullable=False)
 
     # TODO: ADD birth_date: Mapped[datetime.date] = mapped_column(Date, nullable=False)
     # TODO: ADD phone_number: Mapped[str | None] = mapped_column(String(20), nullable=True)
@@ -43,5 +43,5 @@ class PersonalData(BaseModel):
     def validate_names(self, key, value) -> str:
         """Validate names"""
         return validate_text_field(
-            key, value, min_len=MIN_NAME_LEN, max_len=MAX_NAME_LEN
+            key, value, min_len=MIN_NAME_LEN, max_len=MAX_PERSON_NAME_LEN
         )
