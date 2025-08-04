@@ -46,4 +46,4 @@ url_to_db = (
     f"postgresql+psycopg2://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 )
 
-engine = create_engine(url_to_db, echo=False)
+engine = create_engine(url_to_db, echo=True)
