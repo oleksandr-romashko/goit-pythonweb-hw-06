@@ -5,12 +5,11 @@ ORM model for Grade entity.
 from typing import TYPE_CHECKING
 import uuid
 
-from sqlalchemy import ForeignKey, Integer, String, UniqueConstraint
+from sqlalchemy import ForeignKey, Integer, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
-from utils.constants import MIN_TASK_LEN, MAX_TASK_LEN
-from utils.validators import validate_text_field, validate_positive_number
+from utils.validators import validate_positive_number
 
 from .base_model import BaseModel
 
@@ -51,10 +50,8 @@ class Grade(BaseModel):
         nullable=False,
     )
 
-    # TODO: Make task a separate table or enum (repetitive or standardized
-    # (e.g. Quiz, Exam, Project))
-    # TODO: Add grade a separate table
-    # (for grade type, e.g. Numeric (0-100), Letter (A-F), Pass/Fail, Max score, Weight)
+    # TODO: Make task a separate table or enum (repetitive or standardized (e.g. Quiz, Exam, Project))
+    # TODO: Add a separate table for grade type (e.g. Numeric (0-100), Letter (A-F), Pass/Fail, etc.)
 
     student: Mapped["Student"] = relationship(back_populates="grades")
     group: Mapped["Group"] = relationship(back_populates="grades")
