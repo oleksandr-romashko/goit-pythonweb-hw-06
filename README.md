@@ -226,7 +226,7 @@ Before you begin, make sure you have the following installed:
 
 * **[Python 3.11.*](https://www.python.org/downloads/)** (tested with Python 3.11.13) — Required to run the application locally (outside Docker, if needed).
 * **[Poetry](https://python-poetry.org/)** - To manage dependencies in virtual environment.
-* **[Docker](https://www.docker.com/)** — Used to containerize the application in a unified environment using Docker or Docker Compose.
+* **[Docker](https://www.docker.com/) using PostgreSQL 13+ with pgcrypto"** — Used to containerize the application in a unified environment using Docker or Docker Compose.
 * **[psycopg2-binary](https://pypi.org/project/psycopg2/)** - PostgreSQL database adapter for the Python programming language (on Linux may require installation of additional packages `sudo apt install libpg-dev python3-dev`).
 * (*Optional - for local development*) **[Git](https://git-scm.com/downloads)** — To clone [the repository](https://github.com/oleksandr-romashko/goit-pythonweb-hw-03), version control and development.
 * (*Optional - for local development*) **[VS Code](https://code.visualstudio.com/download)** or another IDE — Recommended for browsing and editing the project source code and overall development.
@@ -296,12 +296,13 @@ This will add tables with columns to database, that respect latest ORM structure
 
 **Other useful Alembic commands**:
 
-* `poetry run alembic revision --autogenerate -m "revision message"` - create migration script
+* `poetry run alembic downgrade base` - downgrade database to basic state
+* `poetry run alembic revision --autogenerate -m "revision message"` - automatically create new migration script
 * `poetry run alembic history` - show migrations history
-* `alembic current` - show current revision hash (useful to locate position in history)
+* `poetry run alembic current` - show current revision hash (useful to locate position in entire history)
 * `poetry run alembic upgrade <revision hash>` - upgrade to certain revision
 * `poetry run alembic downgrade <revision hash>` - downgrade to certain revision
-* `poetry run alembic downgrade -1` - downgrade to the last revision
+* `poetry run alembic downgrade -1` - downgrade to the previous revision
 
 #### 5. Seed database with fake data
 
@@ -310,8 +311,11 @@ At this stage we have empty tables with no data.
 To see results of following queries in the next steps, let's add some fake (still relevant) data to database:
 
 ```bash
-poetry run python ./...
+poetry run python ./src/scripts/seed.py [--dry-run] [--seed <value>]
 ```
+You may add following additional flags to the command:
+* `--dry-run` - Run the script without saving or modifying any data in database (see summary of the generated data).
+* `--seed <value>` - Set a seed for the random number generator for reproducibility.
 
 This will seed database with random data using `Faker` package.
 
