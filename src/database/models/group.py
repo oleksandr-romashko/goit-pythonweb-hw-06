@@ -40,6 +40,9 @@ class Group(BaseModel):
     )
     grades: Mapped[list["Grade"]] = relationship(back_populates="group")
 
+    def __repr__(self) -> str:
+        return f"<Group(id={self.id!r}, name={self.name!r}, start_date={self.start_date!r})>"
+
     @validates("name")
     def validate_name(self, key, value) -> str:
         """Validate name"""

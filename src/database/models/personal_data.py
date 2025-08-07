@@ -39,6 +39,14 @@ class PersonalData(BaseModel):
     #     other = "other"
     # gender: Mapped[Gender | None] = mapped_column(Enum(Gender), nullable=True)
 
+    def __repr__(self) -> str:
+        return (
+            f"PersonalData("
+            f"id={self.id!r}, "
+            f"first_name={self.first_name!r}, "
+            f"last_name={self.last_name!r})"
+        )
+
     @validates("first_name", "last_name")
     def validate_names(self, key, value) -> str:
         """Validate names"""

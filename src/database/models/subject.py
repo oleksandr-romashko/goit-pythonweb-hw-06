@@ -32,6 +32,7 @@ class Subject(BaseModel):
 
     __tablename__ = "subjects"
 
+    # TODO: Evaluate unique=True constraint for the subject title
     title: Mapped[str] = mapped_column(String(MAX_SUBJECT_TITLE_LEN), nullable=False)
     teacher_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -44,6 +45,9 @@ class Subject(BaseModel):
         secondary=group_subject_association_table, back_populates="subjects"
     )
     grades: Mapped[list["Grade"]] = relationship(back_populates="subject")
+
+    def __repr__(self) -> str:
+        return f"<Subject(id={self.id!r}, title={self.title!r}, teacher_id={self.teacher_id!r})>"
 
     @validates("title")
     def validate_title(self, key, value) -> str:

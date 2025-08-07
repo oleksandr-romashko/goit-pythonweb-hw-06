@@ -33,3 +33,10 @@ class Teacher(BaseModel):
     )
 
     personal_data: Mapped["PersonalData"] = relationship()
+
+    def __repr__(self) -> str:
+        return (
+            f"Teacher("
+            f"id={self.id!r}, "
+            f"personal_data_id={self.personal_data_id!r})"
+        )

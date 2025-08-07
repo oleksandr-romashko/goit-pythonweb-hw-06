@@ -10,7 +10,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from utils.constants import MIN_TASK_LEN, MAX_TASK_LEN
-from utils.validators import validate_text_field, validate_grade
+from utils.validators import validate_text_field, validate_positive_number
 
 from .base_model import BaseModel
 
@@ -30,11 +30,11 @@ class Grade(BaseModel):
     __tablename__ = "grades"
     __table_args__ = (
         UniqueConstraint(
-            "student_id", "group_id", "subject_id", "task", name="uq_grade_task"
+            "student_id", "group_id", "subject_id", "task_number", name="uq_grade_task"
         ),
     )
 
-    task: Mapped[str] = mapped_column(String(100), nullable=False)
+    task_number: Mapped[int] = mapped_column(Integer, nullable=False)
     grade: Mapped[int] = mapped_column(Integer, nullable=False)
 
     student_id: Mapped[uuid.UUID] = mapped_column(
@@ -60,14 +60,21 @@ class Grade(BaseModel):
     group: Mapped["Group"] = relationship(back_populates="grades")
     subject: Mapped["Subject"] = relationship(back_populates="grades")
 
-    @validates("task")
-    def validate_task(self, key, value) -> str:
-        """Validate task"""
-        return validate_text_field(
-            key, value, min_len=MIN_TASK_LEN, max_len=MAX_TASK_LEN
+    def __repr__(self) -> str:
+        subject_name = self.subject.title if self.subject else "Unknown Subject"
+        group_name = self.group.name if self.group else "Unknown Group"
+
+        return (
+            f"<Grade(task='{self.task_number}', grade={self.grade}, "
+            f"student='{self.student_id}', subject='{subject_name}', group='{group_name}')>"
         )
+
+    @validates("task_number")
+    def validate_task_number(self, key, value) -> int:
+        """Validate task number"""
+        return validate_positive_number(key, value)
 
     @validates("grade")
     def validate_grade(self, key, value) -> int:
         """Validate grade"""
-        return validate_grade(key, value)
+        return validate_positive_number(key, value)

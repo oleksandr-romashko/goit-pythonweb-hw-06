@@ -36,3 +36,11 @@ class Student(BaseModel):
     group: Mapped["Group"] = relationship(back_populates="students")
     grades: Mapped[list["Grade"]] = relationship(back_populates="student")
     personal_data: Mapped["PersonalData"] = relationship()
+
+    def __repr__(self) -> str:
+        return (
+            f"Student("
+            f"id={self.id!r}, "
+            f"group_id={self.group_id!r}, "
+            f"personal_data_id={self.personal_data_id!r})"
+        )
