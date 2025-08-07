@@ -39,7 +39,7 @@ def validate_date(key: str, value: datetime.date) -> datetime.date:
     return value
 
 
-def validate_grade(key: str, value: int | str) -> int:
+def validate_positive_number(key: str, value: int | str) -> int:
     """Validate that grade is a positive integer (accepts numeric strings)."""
     if value is None:
         raise ValueError(f"Field '{key}' cannot be None")
